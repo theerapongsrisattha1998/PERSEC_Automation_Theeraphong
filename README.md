@@ -20,6 +20,8 @@
 - รันเทสทั้งหมด:
   ```bash
   npx playwright test
+  หรือ
+  npm run test:prod
   ```
 - รันเทสและดู Report:
   ```bash

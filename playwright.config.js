@@ -9,7 +9,8 @@ module.exports = defineConfig({
   use: {
     channel: 'chrome',
     headless: process.env.CI ? true : false,
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    screenshot: 'on',
+    video: 'on',
+    trace: 'on',
   },
 });

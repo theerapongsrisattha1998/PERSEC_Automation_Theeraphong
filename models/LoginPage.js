@@ -7,9 +7,17 @@ class LoginPage {
     this.page = page;
     this.usernameInput = page.locator('input[id="username"]');
     this.passwordInput = page.locator('input[id="password"]');
+    this.emailInput = page.locator('input[id="email"]');
     this.loginButton = page.locator('button[id="btn-submit-login"]');
     this.errorNotice = page.locator('div.alert.alert-danger');
     this.errorMessage = page.locator('span.help-block');
+    this.forgotpassLink = page.getByText('Forgot your password?');
+    this.resetPasswordHeading = page.locator('h1.msg-heading-form');
+    this.backToLoginLink  = page.getByRole('link', { name: 'Go back to login', exact: true });
+    this.registerpageLink  = page.getByRole('link', { name: 'Register', exact: true });
+    this.loginpagesubHeading = page.locator('h2.msg-sub-heading-form');
+    this.forgotpassBtn = page.locator('#btn-forgot-pass');
+
   }
   async goto() { await this.page.goto(config.loginUrl); }
   async login(user, pass) {

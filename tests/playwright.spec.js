@@ -14,7 +14,11 @@ test.describe(' BullVPN Playwright ', () => {
 
   test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext({
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+      recordVideo: {
+      dir: 'test-results/videos/',
+      size: { width: 1280, height: 720 }
+      },
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     });
     page = await context.newPage();
 
@@ -105,4 +109,56 @@ test.describe(' BullVPN Playwright ', () => {
           .click();
     await expect(page).toHaveURL(/login/); 
   });
+
+  test('TC12: Login ไม่สำเร็จ : ไม่กรอก username , ไม่กรอก password ', async () => {
+    await loginPage.login('', '');
+    await expect(loginPage.errorMessage.filter({ hasText: config.errorUserMsg }))
+          .toBeVisible();
+    await expect(loginPage.errorMessage.filter({ hasText: config.errorPassMsg }))
+          .toBeVisible();
+    await expect(loginPage.page)
+          .toHaveURL(/login/);
+  });
+
+  test('TC13: ทดสอบกด Forgot your password? ', async () => {
+    await loginPage.forgotpassLink.click();
+    await expect(loginPage.resetPasswordHeading).toHaveText('Reset your password');
+    await expect(loginPage.page)
+          .toHaveURL(/forgot-password/);
+  });
+
+  test('TC14: ทดสอบกดปุ่ม Get the reset link กรณีไม่กรอกอีเมล', async () => {
+    await loginPage.forgotpassBtn.click();
+    await expect(loginPage.errorMessage.filter({ hasText: 'E-mail is required' }))
+          .toBeVisible();
+    await expect(loginPage.page)
+          .toHaveURL(/forgot-password/);
+  });
+
+  test('TC15: ทดสอบกดปุ่ม Get the reset link กรณีกรอกอีเมลภาษาไทย', async () => {
+    await expect(loginPage.emailInput).toBeVisible();
+    await loginPage.emailInput.clear();
+    await loginPage.emailInput.pressSequentially('ภาษาไทย', { delay: 100 });
+    await loginPage.forgotpassBtn.click();
+    await expect(loginPage.errorMessage.filter({ hasText: 'Invalid Username/Email, please check again.' }))
+          .toBeVisible();
+    await expect(loginPage.page)
+          .toHaveURL(/forgot-password/);
+  });
+
+  test('TC16: ทดสอบกด Go back to login ', async () => {
+    await loginPage.backToLoginLink.click();
+    await expect(loginPage.loginpagesubHeading).toHaveText(`Login to your account and Let's get started using a BullVPN.`);
+    await expect(loginPage.page)
+          .toHaveURL(/login/);
+  });
+
+  test('TC17: ทดสอบกด Resgister ', async () => {
+    await loginPage.registerpageLink.click();
+    await expect(loginPage.loginpagesubHeading).toHaveText(`Register to protect your entire digital life and Get Free Trial.`);
+    await expect(loginPage.page)
+          .toHaveURL(/signup/);
+  });
+
+
 });
