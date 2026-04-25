@@ -1,5 +1,6 @@
 const config = require('../config/config.js');
 const { test, expect } = require('@playwright/test');
+import { URL } from '../utils/constants';
 
 class LoginPage {
 
@@ -19,7 +20,7 @@ class LoginPage {
     this.forgotpassBtn = page.locator('#btn-forgot-pass');
 
   }
-  async goto() { await this.page.goto(config.loginUrl); }
+  async goto() { await this.page.goto(URL.LOGIN_URL); }
   async login(user, pass) {
     await expect(this.usernameInput).toBeVisible();
     await expect(this.passwordInput).toBeVisible();
